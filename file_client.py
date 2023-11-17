@@ -3,7 +3,7 @@ from file_transfer_pb2 import FileChunk
 from file_transfer_pb2_grpc import FileTransferStub
 import sys
 def run_client(filename):
-    with grpc.insecure_channel('localhost:50051') as channel:
+    with grpc.insecure_channel('localhost:50052') as channel:
         stub = FileTransferStub(channel)
 
         # Send chunks of data as messages
