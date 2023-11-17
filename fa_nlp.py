@@ -20,6 +20,7 @@ class MyVectorDB():
   summaries = []
   docs = []
   doc_names = []
+  doc_text =[]
   sent_model = SentenceTransformer('bert-base-nli-mean-tokens')
   PDFDIR = 'pdfs'
   def __init__(self):
@@ -110,8 +111,9 @@ class MyVectorDB():
             self.docs.extend(sentences)
         self.doc_names.append((file_name,range(before_id,len(self.docs))))
         before_id = len(self.docs)
-        summary = self.generate_summary(text_for_sum)
-        self.summaries.append(summary)
+        self.doc_text.append(text_for_sum)
+        # summary = self.generate_summary(text_for_sum)
+        # self.summaries.append(summary)
     self.sentence_embeddings = self.sent_model.encode(self.docs)
 
 
@@ -124,6 +126,7 @@ class MyVectorDB():
     self.docs = []
     self.doc_names = []
     self.sentence_embeddings = []
+    self.doc_text = []
     self.process()
   def search(self,search_text,number_of_result=5):
     search_text = search_text.lower()
@@ -149,9 +152,13 @@ class MyVectorDB():
     print(text)
     return text
   def get_summary(self,idx):
+
     text = self.doc_names[idx][0]+' : \n'
-    text += self.summaries[idx]
-    print(text)
+    # text += self.summaries[idx]
+    # print(text)
+    sum_text = self.doc_text[idx]
+    summary = self.generate_summary(sum_text)
+    text += summary
     return text
 
 # vdb4 = MyVectorDB()
