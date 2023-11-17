@@ -1,0 +1,10 @@
+version: "3"
+services:
+  Vector_DB-uplink:
+    # if something fails or the server is restarted, the container will restart
+    restart: always 
+    container_name: Vector_DB-uplink
+    image: Vector_DB-uplink
+    build: 
+      # build the Vector_DB image from the Dockerfile in the current directory
+      context: . 
