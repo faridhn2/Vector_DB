@@ -20,6 +20,6 @@ while True:
             os.system(f'python unary_client.py {command}')
         else:
             command = command.replace('file ','')
-            os.system(f'python unary_client.py {command}')
+            os.system(f'python file_client.py {command}')
     except:
         pass
