@@ -29,6 +29,9 @@ class UnaryClient(object):
 
 
 if __name__ == '__main__':
-    client = UnaryClient()
-    result = client.get_url(message=' '.join(sys.argv[1:]))
-    print(f'{result.message}')
+    try:
+        client = UnaryClient()
+        result = client.get_url(message=' '.join(sys.argv[1:]))
+        print(f'{result.message}')  
+    except:
+        print('Wait for server. Try 10 Seconds later')

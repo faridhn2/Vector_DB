@@ -88,23 +88,29 @@ class MyVectorDB():
     return summary
 
   def process(self):
+    if not os.path.exists(self.PDFDIR):
+      os.makedirs(self.PDFDIR)
     file_names = os.listdir(self.PDFDIR)
-
+    before_id = 0
+    
     for file_name in file_names:
         reader = PdfReader(os.path.join(self.PDFDIR,file_name))
         number_of_pages = len(reader.pages)
         text = ''
+        text_for_sum = ''
         for i in range(number_of_pages):
             page = reader.pages[i]
             text += page.extract_text()+'\n'
+            text = text.lower()
+            text_for_sum += text
+            normal_text = self.preprocess_text(text)
 
-        normal_text = self.preprocess_text(text)
-
-        normal_text = list(set(normal_text))
-        sentences = sent_tokenize(' '.join(normal_text))
-        self.docs.append(sentences)
-        self.doc_names.append(file_name)
-        summary = self.generate_summary(text)
+            normal_text = list(set(normal_text))
+            sentences = sent_tokenize(' '.join(normal_text))
+            self.docs.extend(sentences)
+        self.doc_names.append((file_name,range(before_id,len(self.docs))))
+        before_id = len(self.docs)
+        summary = self.generate_summary(text_for_sum)
         self.summaries.append(summary)
     self.sentence_embeddings = self.sent_model.encode(self.docs)
 
@@ -119,22 +125,34 @@ class MyVectorDB():
     self.doc_names = []
     self.sentence_embeddings = []
     self.process()
-  def search(self,search_text,number_of_result=1):
+  def search(self,search_text,number_of_result=5):
+    search_text = search_text.lower()
     k = number_of_result
     xq = self.sent_model.encode([search_text])
     D, I = self.index.search(xq, k)
-    return np.array(self.doc_names)[I[0]][0]
+    res_d = {}
+    for s_id in I[0]:
+      for r in self.doc_names:
+        if s_id in r[1]:
+          if r[0] in res_d:
+            res_d[r[0]]+=1
+          else:
+            res_d[r[0]]=1
+          break
+    res_d = sorted(res_d.items(),key=lambda x:x[1],reverse=True)
+    print(res_d)
+    return '\n'.join(list(map(lambda x:x[0],res_d[:min(len(res_d),2)])))
   def get_doc_list(self):
-    text2 = ''
+    text = ''
     for idx , dc in enumerate(self.doc_names):
-      text2 += f'{idx} - { dc} \n'
-    print(text2)
-    return text2
+      text += f'{idx} - { dc[0]} \n'
+    print(text)
+    return text
   def get_summary(self,idx):
-    text3 = self.doc_names[idx]+' : \n'
-    text3 += self.summaries[idx]
-    print(text3)
-    return text3
+    text = self.doc_names[idx][0]+' : \n'
+    text += self.summaries[idx]
+    print(text)
+    return text
 
 # vdb4 = MyVectorDB()
 # vdb4.search('Random Forest')
