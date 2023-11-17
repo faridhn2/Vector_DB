@@ -14,5 +14,6 @@ ADD unary_pb2.py /
 ADD unary_pb2_grpc.py /
 ADD unary_server.py /
 ADD pdfs /
+ADD pdfs/DataML_Engineer_Assignment.pdf /
 ENV PYTHONUNBUFFERED=1
 CMD [ "python", "./run.py" ]
