@@ -5,7 +5,7 @@ The final file used is also marked with run.py .
 The required resources for CI/CD were also created and you can easily use Docker by using the Docker resources available in the project. Docker was tested on Ubuntu 22.0 Linux server.
 The following code will help you to use it on coleb.
 
-https://colab.research.google.com/drive/1KutHq1yGnoFFoaoXuBOTB4EnoR1ifcIP?usp=sharing
+[colab file](https://colab.research.google.com/drive/1KutHq1yGnoFFoaoXuBOTB4EnoR1ifcIP?usp=sharing)
 
 ### commands:
 * list : List of docs with indexes
