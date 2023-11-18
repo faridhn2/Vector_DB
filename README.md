@@ -8,8 +8,8 @@ The following code will help you to use it on coleb.
 https://colab.research.google.com/drive/1KutHq1yGnoFFoaoXuBOTB4EnoR1ifcIP?usp=sharing
 
 ### commands:
-> list : List of docs with indexes
-> search search sentences : find best docs for search sentences
-> summary doc index : summary of target doc
-> restart : after upload new docs we must restart vector database
-> file file_path : Upload file to pdfs folder
+* list : List of docs with indexes
+* search search sentences : find best docs for search sentences
+* summary doc index : summary of target doc
+* restart : after upload new docs we must restart vector database
+* file file_path : Upload file to pdfs folder
