@@ -9,7 +9,7 @@ The following code will help you to use it on coleb.
 
 ### commands:
 * list : List of docs with indexes
-* search search sentences : find best docs for search sentences
+* search 'search sentences' : find best docs for search sentences
 * summary doc index : summary of target doc
 * restart : after upload new docs we must restart vector database
-* file file_path : Upload file to pdfs folder
+* file 'file_path' : Upload file to pdfs folder
