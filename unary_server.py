@@ -26,15 +26,20 @@ class UnaryService(pb2_grpc.UnaryServicer):
         elif 'search' in str(message):
           search_key = str(message).replace('search','')
           result = vdb.search(search_key)
-          
-          result = {'message': result , 'received': True}
-        elif 'summary' in str(message):
+        
+        # elif 'summary' in str(message):
          
-            summary_idx = int(str(message).split()[1])
-            result = vdb.get_summary(summary_idx)
-            # result = summary_idx
-            result = {'message': result, 'received': True}
-          
+        #     summary_idx = int(str(message).split()[1])
+        #     result = vdb.get_summary(summary_idx)
+        #     # result = summary_idx
+        #     result = {'message': result, 'received': True}
+        elif 'summary' in str(message):
+          summary_idx = int(str(message).split()[1])
+          try:          
+            result = vdb.generate_summary2(vdb.doc_text[summary_idx],0.05)
+          except:
+            result = vdb.generate_summary2(vdb.doc_text[summary_idx][:int(len(vdb.doc_text[0])/100)],0.03)
+          result = {'message': result , 'received': True}  
         else:
           result = 'Wrong'
           result = {'message': result, 'received': True}
