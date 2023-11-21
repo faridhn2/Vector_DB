@@ -38,7 +38,7 @@ class UnaryService(pb2_grpc.UnaryServicer):
           try:          
             result = vdb.generate_summary2(vdb.doc_text[summary_idx],0.05)
           except:
-            result = vdb.generate_summary2(vdb.doc_text[summary_idx][:int(len(vdb.doc_text[0])/100)],0.03)
+            result = vdb.generate_summary2(vdb.doc_text[summary_idx][:100_000],0.001)
           result = {'message': result , 'received': True}  
         else:
           result = 'Wrong'
