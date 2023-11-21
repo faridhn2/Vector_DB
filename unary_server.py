@@ -32,7 +32,7 @@ class UnaryService(pb2_grpc.UnaryServicer):
         #     summary_idx = int(str(message).split()[1])
         #     result = vdb.get_summary(summary_idx)
         #     # result = summary_idx
-        #     result = {'message': result, 'received': True}
+          result = {'message': result, 'received': True}
         elif 'summary' in str(message):
           summary_idx = int(str(message).split()[1])
           try:          
