@@ -170,7 +170,8 @@ class MyVectorDB():
     xq = self.vectorizer.transform([search_text]).toarray()
     results = cosine_similarity(self.sentence_embeddings,xq)
     results = pd.DataFrame(results)
-    for s_id in list(results[0].nlargest(n=5).index):
+    res_d = {}
+    for s_id in list(results[0].nlargest(n=k).index):
       for r in self.doc_names:
         if s_id in r[1]:
           if r[0] in res_d:
