@@ -19,12 +19,15 @@ import spacy
 from spacy.lang.en.stop_words import STOP_WORDS
 from string import punctuation
 from heapq import nlargest
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+import pandas as pd
 class MyVectorDB():
   summaries = []
   docs = []
   doc_names = []
   doc_text =[]
-  sent_model = SentenceTransformer('bert-base-nli-mean-tokens')
+  vectorizer = TfidfVectorizer()
   PDFDIR = 'pdfs'
   def __init__(self):
     self.process()
@@ -126,6 +129,8 @@ class MyVectorDB():
     before_id = 0
     
     for file_name in file_names:
+      if '.pdf' in file_name :
+        
         reader = PdfReader(os.path.join(self.PDFDIR,file_name))
         number_of_pages = len(reader.pages)
         text = ''
@@ -135,23 +140,23 @@ class MyVectorDB():
             text += page.extract_text()+'\n'
             text = text.lower()
             text_for_sum += text
-            normal_text = self.preprocess_text(text)
+            # normal_text = self.preprocess_text(text)
 
-            normal_text = list(set(normal_text))
-            sentences = sent_tokenize(' '.join(normal_text))
+            # normal_text = list(set(normal_text))
+            sentences = sent_tokenize(text)
             self.docs.extend(sentences)
         self.doc_names.append((file_name,range(before_id,len(self.docs))))
         before_id = len(self.docs)
         self.doc_text.append(text_for_sum)
         # summary = self.generate_summary(text_for_sum)
         # self.summaries.append(summary)
-    self.sentence_embeddings = self.sent_model.encode(self.docs)
+    self.sentence_embeddings = self.vectorizer.fit_transform(self.docs)
 
 
 
-    self.d = self.sentence_embeddings.shape[1]
-    self.index = faiss.IndexFlatL2(self.d)
-    self.index.add(self.sentence_embeddings)
+    # self.d = self.sentence_embeddings.shape[1]
+    # self.index = faiss.IndexFlatL2(self.d)
+    # self.index.add(self.sentence_embeddings)
   def restart(self):
     self.summaries = []
     self.docs = []
@@ -162,10 +167,10 @@ class MyVectorDB():
   def search(self,search_text,number_of_result=5):
     search_text = search_text.lower()
     k = number_of_result
-    xq = self.sent_model.encode([search_text])
-    D, I = self.index.search(xq, k)
-    res_d = {}
-    for s_id in I[0]:
+    xq = self.vectorizer.transform([search_text]).toarray()
+    results = cosine_similarity(self.sentence_embeddings,xq)
+    results = pd.DataFrame(results)
+    for s_id in list(results[0].nlargest(n=5).index):
       for r in self.doc_names:
         if s_id in r[1]:
           if r[0] in res_d:
@@ -175,7 +180,8 @@ class MyVectorDB():
           break
     res_d = sorted(res_d.items(),key=lambda x:x[1],reverse=True)
     print(res_d)
-    return '\n'.join(list(map(lambda x:x[0],res_d[:min(len(res_d),2)])))
+    star = '*'
+    return '\n'.join(list(map(lambda x:f'{star*x[1]} {x[0]}',res_d)))
   def get_doc_list(self):
     text = ''
     for idx , dc in enumerate(self.doc_names):
