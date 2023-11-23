@@ -287,7 +287,7 @@ class MyVectorDB():
     self.doc_text = []
     self.process()
 
-  def search(self,search_text,number_of_result=5):
+  def search(self,search_text,number_of_result=1):
     """
         Searches for documents related to the input text.
 
@@ -307,22 +307,24 @@ class MyVectorDB():
     results = cosine_similarity(self.sentence_embeddings,xq)
     # use dataframe for searching faster
     results = pd.DataFrame(results)
-    res_d = {}
-    # find best result based on frequency of document titles 
-    for s_id in list(results[0].nlargest(n=k).index):
-      for r in self.doc_names:
-        if s_id in r[1]:
-          if r[0] in res_d:
-            res_d[r[0]]+=1
-          else:
-            res_d[r[0]]=1
-          break
     
-    res_d = sorted(res_d.items(),key=lambda x:x[1],reverse=True)
+    # res_d = {}
+    # # find best result based on frequency of document titles 
+    # for s_id in list(results[0].nlargest(n=k).index):
+    #   for r in self.doc_names:
+    #     if s_id in r[1]:
+    #       if r[0] in res_d:
+    #         res_d[r[0]]+=1
+    #       else:
+    #         res_d[r[0]]=1
+    #       break
+    
+    # res_d = sorted(res_d.items(),key=lambda x:x[1],reverse=True)
     # print(res_d)
-    star = '*'
-    return '\n'.join(list(map(lambda x:f'{star*x[1]} {x[0]}',res_d)))
-
+    # star = '*'
+    # return '\n'.join(list(map(lambda x:f'{star*x[1]} {x[0]}',res_d)))
+    
+    return self.docs[results[0].nlargest(n=k).index]
   def get_doc_list(self):
     """
         Returns a formatted list of document names.

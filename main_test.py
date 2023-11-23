@@ -15,7 +15,7 @@ class TestBasic(unittest.TestCase):
         print('Wait two minutes')
     #   print('Running main server')
         p.start()
-        time.sleep(90)
+        time.sleep(60)
         
 
     
