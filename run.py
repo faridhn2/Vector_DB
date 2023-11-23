@@ -4,10 +4,10 @@ import time
 def main_server():
   os.system('python unary_server.py')
 p = multiprocessing.Process(target=main_server)
-print('Wait two minutes')
+print('Wait a minute')
 print('Running main server')
 p.start()
-time.sleep(120)
+time.sleep(60)
 def file_s():
   os.system('python file_server.py')
 p2 = multiprocessing.Process(target=file_s)
